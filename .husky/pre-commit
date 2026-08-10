@@ -1,1 +1,8 @@
-bunx lint-staged
+# Git hooks run with a minimal PATH, so bun/node may be missing when committing from the IDE.
+export PATH="$HOME/.bun/bin:/usr/local/bin:$PATH"
+
+if command -v bun >/dev/null 2>&1; then
+    bunx lint-staged
+else
+    lint-staged
+fi

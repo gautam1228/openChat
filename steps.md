@@ -157,11 +157,48 @@ bun add -d lint-staged
 
 Replace the default hook content with:
 
-```bash
-bunx lint-staged
+```sh
+# Git hooks run with a minimal PATH, so bun/node may be missing when committing from the IDE.
+export PATH="$HOME/.bun/bin:/usr/local/bin:$PATH"
+
+if command -v bun >/dev/null 2>&1; then
+    bunx lint-staged
+else
+    lint-staged
+fi
 ```
 
 On every commit, staged files are ESLint-fixed and Prettier-formatted before the commit completes.
+
+### Ensure Husky is installed
+
+Husky wires Git to `.husky/_` via `core.hooksPath`. If that directory is missing, **no hooks run at all** (commits succeed silently).
+
+After cloning or if hooks stop working, run:
+
+```bash
+bun install   # runs the "prepare" script, which calls husky
+# or explicitly:
+bun run prepare
+```
+
+Verify setup:
+
+```bash
+git config --get core.hooksPath   # should print: .husky/_
+ls .husky/_/pre-commit            # should exist
+```
+
+### Troubleshooting: hooks not running from the IDE
+
+1. **Missing `.husky/_`** — run `bun run prepare` (see above).
+2. **Minimal PATH in Git hooks** — the IDE invokes Git with a stripped-down `PATH` that often omits `~/.bun/bin`. The `export PATH=...` line in `.husky/pre-commit` fixes this.
+3. **Cursor/VS Code "Allow No Verify Commits"** — if enabled (`git.allowNoVerifyCommits`), the Source Control UI can skip hooks. Disable it in settings.
+4. **Test the hook manually**:
+
+```bash
+sh .husky/_/pre-commit
+```
 
 ---
 
@@ -185,21 +222,21 @@ bun run format
 
 ## Summary of dependencies added
 
-| Package                 | Purpose                                      |
-| ----------------------- | -------------------------------------------- |
-| `prettier`              | Code formatter (already present)             |
-| `eslint-config-prettier`| Disable ESLint rules that conflict with Prettier |
-| `husky`                 | Git hooks                                    |
-| `lint-staged`           | Run linters on staged files only             |
+| Package                  | Purpose                                          |
+| ------------------------ | ------------------------------------------------ |
+| `prettier`               | Code formatter (already present)                 |
+| `eslint-config-prettier` | Disable ESLint rules that conflict with Prettier |
+| `husky`                  | Git hooks                                        |
+| `lint-staged`            | Run linters on staged files only                 |
 
 ---
 
 ## Quick reference
 
-| Command                  | Description                          |
-| ------------------------ | ------------------------------------ |
-| `bun run lint`           | Run ESLint on the project            |
-| `bun run lint:fix`       | Run ESLint with auto-fix             |
-| `bun run format`         | Format all files with Prettier       |
-| `bun run format:check`   | Check Prettier formatting (CI-friendly) |
-| `bunx lint-staged`       | Run lint-staged manually (same as pre-commit) |
+| Command                | Description                                   |
+| ---------------------- | --------------------------------------------- |
+| `bun run lint`         | Run ESLint on the project                     |
+| `bun run lint:fix`     | Run ESLint with auto-fix                      |
+| `bun run format`       | Format all files with Prettier                |
+| `bun run format:check` | Check Prettier formatting (CI-friendly)       |
+| `bunx lint-staged`     | Run lint-staged manually (same as pre-commit) |
