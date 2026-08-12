@@ -9,7 +9,7 @@ import {
     deleteConversation,
     listConversations,
     updateConversation,
-} from "@/features/conversation/action/conversation-actions";
+} from "@/features/conversation/actions/conversation-actions";
 import { queryKeys } from "@/features/conversation/utils/query-keys";
 
 export function useConversations() {
