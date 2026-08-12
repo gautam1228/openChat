@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme-providers";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const publicSans = Public_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -38,16 +39,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             )}
         >
             <body className="min-h-full flex flex-col">
-                <QueryProvider>
-                    <ThemeProvider
-                        attribute="class"
-                        defaultTheme="system"
-                        enableSystem
-                        disableTransitionOnChange
-                    >
-                        <TooltipProvider>{children}</TooltipProvider>
-                    </ThemeProvider>
-                </QueryProvider>
+                <ClerkProvider>
+                    <QueryProvider>
+                        <ThemeProvider
+                            attribute="class"
+                            defaultTheme="system"
+                            enableSystem
+                            disableTransitionOnChange
+                        >
+                            <TooltipProvider>{children}</TooltipProvider>
+                        </ThemeProvider>
+                    </QueryProvider>
+                </ClerkProvider>
             </body>
         </html>
     );

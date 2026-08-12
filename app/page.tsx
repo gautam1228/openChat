@@ -1,4 +1,5 @@
 import { ModeToggle } from "@/components/mode-toggle";
+import { UserButton } from "@clerk/nextjs";
 
 export default function Home() {
     return (
@@ -6,6 +7,7 @@ export default function Home() {
             <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
                 <h1 className="text-4xl font-bold">Openchat Init</h1>
                 <ModeToggle />
+                <UserButton />
             </main>
         </div>
     );
