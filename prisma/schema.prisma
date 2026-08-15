@@ -62,7 +62,7 @@ model Message {
   role     MessageRole
   status   MessageStatus @default(PENDING)
   content  String        @db.Text
-  parts    Json
+  parts    Json?
   metadata Json?
 
   parentId String?
